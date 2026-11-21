@@ -28,6 +28,8 @@ DIST_DIR := ./dist
 SNAPSHOT_DIR := ./snapshot
 CHANGELOG := CHANGELOG.md
 OS := $(shell uname | tr '[:upper:]' '[:lower:]')
+BIN_DIR := ./bin
+LDFLAGS := -X github.com/khulnasoft/dep-parser/pkg/version/app.ver=$(VERSION)
 
 ifndef VERSION
 	$(error VERSION is not set)
@@ -119,6 +121,18 @@ check-licenses:  ## Ensure transitive dependencies are compliant with the curren
 
 check-go-mod-tidy:
 	@ .github/scripts/go-mod-tidy-check.sh && echo "go.mod and go.sum are tidy!"
+
+
+## Build targets #################################
+
+.PHONY: bin
+bin: ## Build a dep-parser binary for the current platform into ./bin
+	@mkdir -p $(BIN_DIR)
+	go build -ldflags "$(LDFLAGS)" -o $(BIN_DIR)/dep-parser ./cmd/dep-parser
+
+.PHONY: generate
+generate: ## Run code generation across the module
+	go generate ./...
 
 
 ## Testing targets #################################
