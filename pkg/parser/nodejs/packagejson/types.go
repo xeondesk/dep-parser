@@ -75,3 +75,23 @@ func (l *License) UnmarshalJSON(data []byte) error {
 func (l License) Names() []string {
 	return l.names
 }
+
+// Requirements converts declared dependency ranges into structured
+// requirement records for downstream version-range evaluation.
+func (p Package) Requirements() types.Requirements {
+	var reqs types.Requirements
+	add := func(loc string, deps map[string]string) {
+		for name, constraint := range deps {
+			reqs = append(reqs, types.Requirement{
+				Ecosystem:  "npm",
+				Name:       name,
+				Constraint: constraint,
+				Location:   loc,
+			})
+		}
+	}
+	add("dependencies", p.Dependencies)
+	add("optionalDependencies", p.OptionalDependencies)
+	add("devDependencies", p.DevDependencies)
+	return reqs
+}

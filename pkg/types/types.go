@@ -179,3 +179,17 @@ const (
 	RelationshipUnknown   Relationship = "unknown"
 	RelationshipWorkspace Relationship = "workspace"
 )
+
+// Requirement is a declared dependency constraint as written in a manifest
+// (e.g. package.json "dependencies"), as opposed to a resolved Package.
+// It is the input contract for version-range evaluation (e.g. go-version-lib).
+type Requirement struct {
+	Ecosystem       string `json:"ecosystem"`                  // npm, gem, pep440, maven, cargo, pub, hex, nuget, golang, ...
+	Name            string `json:"name"`                       // package name as declared
+	Constraint      string `json:"constraint"`                 // raw version requirement, e.g. "^1.2.3"
+	Location        string `json:"location,omitempty"`         // dependencies | devDependencies | peerDependencies | ...
+	VersionResolved string `json:"version_resolved,omitempty"` // locked version when known
+	Source          string `json:"source,omitempty"`           // manifest file path
+}
+
+type Requirements []Requirement

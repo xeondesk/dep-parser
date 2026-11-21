@@ -125,7 +125,7 @@ var entries = []Entry{
 		if err != nil {
 			return nil, nil, err
 		}
-		return []any{pkg}, nil, nil
+		return []any{pkg}, pkg.Requirements(), nil
 	}},
 	{Name: "nodejs-pnpm", Lang: types.Pnpm, Parse: func(ctx context.Context, r xio.ReadSeekerAt) (any, any, error) {
 		return wrap(pnpm.NewParser().Parse(ctx, r))
